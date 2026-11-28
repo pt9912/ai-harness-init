@@ -139,7 +139,7 @@ Schärfung liegt in dessen §3/§6 (Closure-Zug `623a6798`).
 
 ## 2. Definition of Done
 
-- [ ] **Liefer-Punkt 1:** das Unterkommando
+- [x] **Liefer-Punkt 1:** das Unterkommando
       `--stamp-records <result-file>` in
       [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) —
       verb-Schalter vor `main`, liest das Result-File einmal vollständig und
@@ -155,7 +155,7 @@ Schärfung liegt in dessen §3/§6 (Closure-Zug `623a6798`).
       mit Run, Attempt und geprüftem Commit
       ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form
       je Zahl ein Kommando, Festlegung 5).
-- [ ] **Liefer-Punkt 2:** der Wächter über dem **realen** Werkzeug —
+- [x] **Liefer-Punkt 2:** der Wächter über dem **realen** Werkzeug —
       `test/stamp-records-mechanik.bats` (Happy: je Fall-Zeile angehängt,
       Kopf je neuem Fall-File; Negative: jede fail-closed-Grenze bricht mit
       Meldung, doppeltes `(fall, run, attempt)`-Paar, unbekannte/mehrdeutige
@@ -167,7 +167,7 @@ Schärfung liegt in dessen §3/§6 (Closure-Zug `623a6798`).
       ([`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit))
       — der Rot-Beleg je Zusage, nicht die grüne Suite
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-- [ ] **Liefer-Punkt 3:** die Granularitäts-Zeile in
+- [x] **Liefer-Punkt 3:** die Granularitäts-Zeile in
       [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
       §CI-Branch trägt die Fall-Form — Ort
       `.harness/stamp/mutate/<fall-kennung>.txt`, Zeilen-Form, das
@@ -182,17 +182,17 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update für das Treiber-Unterkommando, falls ein öffentlicher
+- [x] Doku-Update für das Treiber-Unterkommando, falls ein öffentlicher
       Vertrag berührt — die Form-Stelle ist
       [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
       §CI-Branch, getragen als Liefer-Punkt 3.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -302,30 +302,32 @@ dasteht.
   Fall-Zeilen der letzten Sammel-Züge): ein Teil liegt an, der Rest nicht, und
   ein Wiederholungs-Lauf bricht an der `(fall, run, attempt)`-Doppelung des
   bereits gestempelten Anteils fail-closed, statt fortzuführen — die
-  Wiederaufnahme hat die ADR-Form nicht. — **Ausgang** (Beleg-Zeilen je
-  Closure): *weiter offen* → `BEO-ALL/stamp-abbruch-hinterlaesst-teilbestand`
-  im Register, wenn das Ergebnis den Fall trägt; *entfallen* mit Grund, wenn
-  der Test-Lauf (bats über kopiertem Bestand) zeigt, dass ein Abbruch vor dem
-  Anhang aus dem vollständigen Prüfverlauf unmöglich ist.
+  Wiederaufnahme hat die ADR-Form nicht. — **Ausgang:** *weiter offen* →
+  `BEO-ALL/stamp-abbruch-hinterlaesst-teilbestand` im Register, Beleg
+  `evidence/slice-stamp-records-konsum-v1.md` — die Messung des
+  Verifikations-Berichts (R1) trägt: bricht der Konsum zwischen zwei Anhängen,
+  bleibt ein Teilbestand, und der Wiederhol-Lauf bricht an der Paar-Doppelung
+  fail-closed (`test/stamp-records-mechanik.bats` Test 7, Suite 17/17), ohne
+  Wiederaufnahme-Form.
 - Die Fall-Kennung einer gestempelten Datei löst nach dem Umbenennen ihrer
   Mutations-Datei nicht mehr (Datei-Formen unter `test/mutations/` wandern je
   [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)-
   Bestands-Messung am Commit) — künftige Anhänge für den Fall brechen
-  fail-closed, die Geschichte bleibt an der alten Fall-Adresse. — **Ausgang**
-  (Beleg-Zeilen je Closure): *weiter offen* →
-  `BEO-ALL/fall-datei-adresse-loest-nach-umbenennen-nicht` im Register,
-  falls die Beobachtung im Lauf anfällt; *entfallen* mit Grund, wenn der
-  Umbenennungs-Fall im bats-Zug gezeigt ist (fail-closed-Meldung nennt den
-  Fall und die umbenannte Quelle) und diese Grenze als erwartbar gilt.
+  fail-closed, die Geschichte bleibt an der alten Fall-Adresse. —
+  **Ausgang:** *entfallen* — der Umbenennungs-Fall ist im bats-Zug gezeigt
+  (Test 10 `die umbenannte Fall-Quelle loest nicht mehr auf und bricht, die
+  Geschichte bleibt an der alten Adresse`, Suite 17/17 je
+  Verifikations-Bericht); die fail-closed-Meldung nennt den Fall und die
+  umbenannte Quelle, die Grenze gilt als erwartbar.
 - Zweiter Konsum-Lauf desselben Sweep-Ergebnisses über denselben geprüften
   Commit nach einem Retry des `ergebnis`-Jobs mit neuer `run <id>` — die
   Paar-Prüfung hält nur exaktes `(fall, run, attempt)`; ein zweites Urteil
-  über denselben Commit trägt scheinbar ein neues Paar. — **Ausgang** (Beleg
-  je Closure): *entfallen* mit Grund, wenn die Kopf-Zeile des Fall-Files den
-  geprüften Commit trägt, so dass die Doppelung am Kopf lesbar ist
-  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung));
-  sonst *weiter offen* → `BEO-ALL/retry-ergebnis-job-stempelt-doppelt` im
-  Register.
+  über denselben Commit trägt scheinbar ein neues Paar. — **Ausgang:**
+  *entfallen* — Test 9 grün (`ein Retry mit neuer run-id haengt an; der
+  gepruefte Commit steht im Kopf`); die Kopf-Zeile des Fall-Files trägt den
+  geprüften Commit
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form),
+  die Doppelung ist am Kopf lesbar.
 
 ## 7. Closure-Notiz
 
@@ -348,20 +350,58 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<KUERZEL>/<slug>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** der Konsum in der
+  [`ADR-0107`](../../adr/0107-die-mutations-record-granularitaet-ist-je-fall.md)-Form
+  (einmal-Lesung, Vorab-Prüfung, je-Zeile-Anhang, Kopf je neuem Fall-File nach
+  [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung))
+  gegen die Szenario-Batterie und 17/17
+  (`test/stamp-records-mechanik.bats`); `make mutate-greift` 806/806; die zwei
+  übernommenen Design-Posten getragen — `rest` leer (Exit 0) und der
+  Record-only-Vertrag byte-gleich am `MENGE_REST`-Wächter.
+- **Was ging anders als geplant:** drei Befunde des Verifikations-Berichts —
+  B-1 (MEDIUM, Bestand): der dokumentierte Teillauf
+  `make mutate MUTATE_CASES='<fälle>'` fällt im Grün-Vorlauf, die
+  Umgebungs-Auswahl erreicht `greift_main`; die Rot-Züge dieses Laufs liefen
+  darum als Substitution je Fall-Kopf am Bestand statt über den Teillauf;
+  B-2: der gepushte Mutations-Branch trägt eine divergente Linie
+  (Lösch-Posten unten, Entscheidung nicht allein getroffen); B-3: die in §1
+  datierte Zahl 34 des Zuordnungs-Rests ist am Verifikations-Stand nicht mehr
+  der Ist — Messung unten.
+- **Steering-Loop-Eintrag:** Lernkandidat, **gezählt statt verkörpert** — der
+  Konsum liest das Result-File einmal vollständig und prüft vor jedem Anhang;
+  die Fall-Zeile trägt kein Urteil (der Anhang verwandelt, er urteilt nicht).
+  Verkörpert wurde nichts über den gelieferten Umfang hinaus — die Teil-Zeile
+  `— liegt in …` entfällt ersatzlos; die Form selbst steht in
+  [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) §CI-Branch
+  als Lieferung (LP 3), nicht als Steering-Loop-Regel.
+- **Beobachtungs-Register (`../observations/`):** `BEO-ALL/stamp-abbruch-hinterlaesst-teilbestand/`
+  neu angelegt, Beleg `evidence/slice-stamp-records-konsum-v1.md`;
+  `evidence/slice-stamp-records-konsum-v1.md` in
+  `BEO-ALL/mutate-cases-leakt-in-den-bats-gruen-vorlauf/` ergänzt — Zähler
+  steht damit bei 2 × (`ls evidence | wc -l`); die berührte Ebene
+  Konsum/Record-Ablage trägt über die beiden Belege hinaus keinen Eintrag
+  (§8-Sichtung).
+- **Folge-Slices:** `slice-mutate-cases-leakt-nicht-am-teillauf` (der Teillauf
+  des Mutations-Treibers bricht nicht mehr am Grün-Vorlauf) — ist eine Datei
+  in `next/`.
+- **Risiken aus §6:** R1 *weiter offen* → `BEO-ALL/stamp-abbruch-hinterlaesst-teilbestand` ·
+  R2 *entfallen* (Test 10) · R3 *entfallen* (Test 9) — je mit Beleg, siehe §6.
+- **Rest-Frische-Messung:** `bash harness/tools/gates-keys.sh rest` → leer,
+  Exit 0 (2026-11-28); die deklarierten `MENGE_REST`-Klassen treffen exakt
+  15 Dateien (`git ls-files | grep -cE '(^|/)\.gitkeep$|^docs/user/images/.+|^harness/tools/.+\.awk$|^harness/tools/homebrew-formula\.rb\.tmpl$|^\.claude/settings\.json$|^\.codex/hooks\.json$|^\.gitattributes$|^\.gitignore$|^\.viper\.sh$|^LICENSE$'`
+  → 15, 15/15) — statt der datierten 34 aus §1 (Geber-Closure
+  [`slice-gates-pruefgegenstand-stempel-v1`](../done/slice-gates-pruefgegenstand-stempel-v1.md),
+  `623a6798`).
+- **Übergabe — Lösch-Posten (Verify-Befund B-2):** der divergente Branch
+  `mutate/slice-stamp-records-konsum-v1-b63291e6` auf `origin` — sein
+  geprüfter Commit `b63291e64d00` ist kein Commit der verifizierten Kette,
+  sein Resultat ist kein Verifikations-Beleg für `HEAD 3c7bed9a`. Lösch-Posten:
+  `git push origin :refs/heads/mutate/slice-stamp-records-konsum-v1-b63291e6` —
+  **Entscheidung offen und nicht allein getroffen** (Auftraggeber; der
+  CI-Branch-Zug trägt der Verifier). Bis dahin ist auch die offene Hälfte von
+  B-2 benannt: der reale Konsum-Stamp an einem echten Result-File über der
+  verifizierten Kette (`mutate-auswahl` → Push → Konsum) fehlt.
+- **Drei Paarungen:** *(nach dem `git mv` gefüllt — Ergebnis im Häkchen-Commit)*
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

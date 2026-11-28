@@ -1,0 +1,2 @@
+**Vorgang:** slice-stamp-records-konsum-v1
+**Fund:** Verifikation (R1 im Bericht `docs/reviews/2026-11-27-slice-stamp-records-konsum-v1-verify.md`): bricht der Konsum zwischen zwei Anhängen, bleibt ein Teilbestand im Fall-File; der Wiederhol-Lauf bricht an der Paar-Doppelung fail-closed (gemessen, `test/stamp-records-mechanik.bats` Test 7, Suite 17/17), ohne Wiederaufnahme-Form — Ausgang des Risikos R1 *weiter offen*.
