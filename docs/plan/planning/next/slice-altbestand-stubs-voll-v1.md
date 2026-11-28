@@ -46,7 +46,7 @@ Umzugs-Stub ist die fünfte Klasse derselben Mechanik),
 Archivierungs-Operation, keine Anforderung). Der Verweis zeigt **aufwärts**:
 Die Spec nennt diesen Slice nie.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912
 
 **Autor:** pt9912 (Rolle Planner, je [`ADR-0112`](../../adr/0112-umzugs-stub-traegt-die-referenzen-die-der-nachzug-nicht-erreicht.md)
 Architektur-Skizze, Architektur-Zug `6b81fd0c`). **Datum:** 2026-11-28.
