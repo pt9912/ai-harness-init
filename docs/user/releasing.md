@@ -58,20 +58,30 @@ Die Schritt-Folge:
    Festlegung 1); ohne ihn baut der Lauf ein anderes Binary als der
    Workflow, und die Homebrew-Formel entfällt — das Skeleton trägt den Tag.
 
-2. **Digests messen und den Pin ziehen.** Die `SHA256SUMS`-Zeilen sind die
-   gemessenen Digests der sechs Assets; der Pin trägt Version und Digest,
+2. **Digests messen und den Pin ziehen — aus der Publikation.** Der Bump
+   des Pin folgt der Publikation, nie umgekehrt
+   (slice-traeger-tag-nachzug-untergrenze-v1): die `SHA256SUMS` des
+   gepublishten Release sind die Quelle der Prüfsummen. `make release-warten`
+   wartet begrenzt, bis sie abrufbar ist; dann tragen `TRAEGER_TAG` und die
+   sechs `TRAEGER_SHA256_*`-Werte im Makefile die Einträge der Publikation,
    fail-closed gekoppelt
-   ([`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
-   `TRAEGER_TAG` und die sechs `TRAEGER_SHA256_*`-Werte stehen im Makefile,
-   die emittierte Vorlage trägt den Tag (Schritt 1). Das Makefile ist nicht
-   eingebettet, seine Werte folgen dem Bau. Alles gehört in den Commit, den
-   der Tag tragen wird — der Pin zeigt im selben Vorgang auf den
-   geschnittenen Stand
+   ([`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)), die
+   emittierte Vorlage und der Tag-Wert in `test/traeger-fetch.bats` denselben
+   Tag. Der Pin-Commit folgt dem Tag-Commit — der Tag trägt den Pin-Stand
+   nicht mehr; die Kopplung von Pin und Werkzeug-Fassung
    ([`ADR-0058`](../plan/adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
-   Festlegung 2). Dass die gemessenen Digests die des Workflows sind, belegt
-   nach der Publikation für die Plattform des Aufrufers `make traeger-fetch`:
-   es hält das veröffentlichte Asset dieser Plattform gegen den Pin. Alle
-   sechs Pins hält `make traeger-pins-check` nach Schritt 5.
+   Festlegung 2) hält der Pin gegen die Publikation, gemessen mit
+   `make traeger-pins-check TAG=<neu>` — er hält die sechs Pins von
+   `TRAEGER_TAG` gegen die `SHA256SUMS` des Tags, je gepaart nach dem Namen
+   des Assets. Die Formel am Tap-Kopf hält `make tap-check TAG=<neu>` gegen
+   das Asset des Tags. Für die Plattform des Aufrufers belegt `make
+   traeger-fetch` den Asset-Digest gegen seinen Pin, fail-closed vor der
+   Ablage. Die Kopplung an den nächsten Schnitt: das Binary, das der
+   Tag-Lauf baut, trägt die Vorlage des Quell-Stands — sein emittierter
+   Fragment-Default zeigt einen Schnitt zurück, und der nächste Schnitt hebt
+   ihn; die Fassungsmeldung `--version` kommt aus dem
+   Tag-Ref-Fassungs-Injektions-Kanal · seit
+   slice-traeger-tag-nachzug-untergrenze-v1.
 
 3. **Die Assets gegen die Prüfsummen halten.**
    `bash harness/tools/release-sums.sh verify <dir>` — fehlt die
