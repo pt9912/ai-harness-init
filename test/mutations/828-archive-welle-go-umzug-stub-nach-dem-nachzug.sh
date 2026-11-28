@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # files: internal/archive/anwenden.go
 # expect: TestUmzugsStubVorDemNachziehenGesehen
+# Waechter · seit slice-altbestand-stubs-voll-v1
 # verify: test-go
 #
 # VERSCHIEBT DEN UMZUGS-STUB-WRITE HINTER DEN NACHZUG: der Nachzug liest die
