@@ -42,14 +42,32 @@ HASH_AUSNAHMEN=(
   '.harness/state/full-smoke-passed.key'
 )
 
-# ausnahme — 0, wenn der Pfad auf einen deklarierten Eintrag passt (Glob oder
-# Verzeichnis mit Kindern), 1 sonst.
+# passt <pfad> <eintrag> — die Lesung eines deklarierten Eintrags: ohne Stern
+# liest der Eintrag als Verzeichnis (er deckt sich selbst und seine Kinder),
+# mit genau einem Stern als Praefix-*-Suffix-Muster. Die [[ == $e ]]- und die
+# case-$e-Fassung wuerden SC2053 bzw. SC2254 anmahnen — kein Inline-Suppression
+# (AGENTS.md §3.2), darum die explizite Teilung: quoted Teile literal, die
+# unquoted Sternstelle Muster.
+passt() {
+  local p="$1" e="$2" praefix suffix
+  if [ "${e#*'*'}" = "$e" ]; then
+    [ "$p" = "$e" ] && return 0
+    case "$p" in "$e"/?*) return 0 ;; esac
+    return 1
+  fi
+  praefix="${e%%'*'*}"
+  suffix="${e#*'*'}"
+  case "$p" in "$praefix"*"$suffix") return 0 ;; esac
+  return 1
+}
+
+# ausnahme — 0, wenn der Pfad auf einen deklarierten Eintrag passt, 1 sonst.
 ausnahme() {
   local p="$1" e
   for e in "${HASH_AUSNAHMEN[@]}"; do
-    case "$p" in
-      $e | "$e"/*) return 0 ;;
-    esac
+    if passt "$p" "$e"; then
+      return 0
+    fi
   done
   return 1
 }
