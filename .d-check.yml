@@ -4,11 +4,15 @@
 scan:
   roots: ["."]
   # **/*.template.md: Ausfuell-Vorlagen tragen Platzhalter-Pfade und -Kennungen, die erst im
-  # ausgefuellten Artefakt aufloesen. Getroffen werden sie unter .harness/baseline/ und seit
-  # ADR-0061 Festlegung 2 unter internal/emit/templates/ — die dort mitgetragene
-  # Report-Stub-Vorlage ist dieselbe Klasse (Platzhalter, keine Ziel-Kennungen), tool-autoriert
-  # wie die Register-README; `git ls-files '*.template.md'` nennt beide Baeume. Das Muster
-  # nimmt jede kuenftige Vorlage in jedem Baum mit.
+  # ausgefuellten Artefakt aufloesen. Getroffen werden sie in drei Baeumen: .harness/baseline/
+  # (der vendored Kurs-Satz), docs/plan/planning/ (die repo-eigene Report-Stub-Vorlage,
+  # ADR-0061 Festlegung 2) und internal/emit/templates/ (die mitgetragene Kopie des Bootstraps,
+  # dieselbe Klasse: Platzhalter, keine Ziel-Kennungen); Wurzel-Namen
+  #   git ls-files '*.template.md' | sed 's|/.*||' | sort -u   →  docs · .harness · internal
+  # Das Muster nimmt jede kuenftige Vorlage in jedem Baum mit. Grenze, gemessen: der
+  # ausnahmegrund-Waechter zwingt die Nennung in dieser Tiefe nicht einzeln — genennt() liest
+  # Substring, und die 0013-Zeile weiter unten in derselben Begruendung enthaelt "docs/plan/"
+  # bereits; die zwingende Form traegt dieser Textabsatz selbst, nicht ein Fall.
   # .tmp/**: Arbeitsablage der Laeufe, kein Artefakt.
   # .harness/baseline/: committet vendored Baseline (MR-007) — externer,
   # derivativer Inhalt, nicht repo-autoritativ; vom Doc-Gate ausgenommen. Sie
