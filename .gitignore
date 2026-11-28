@@ -1,8 +1,16 @@
-# Harness-Laufzustand (lokal — NUR state/;
+# Harness-Laufzustand: der Verzeichnis-Eintrag in der Pflicht-Form mit zwei
+# Ausnahme-Blöcken (ADR-0111 Festlegung 1/4) — die je-Check-Keys
+# (.harness/state/gates-passed-<check>.key) und der E2E-Stempel
+# (.harness/state/full-smoke-passed.key) sind committet und reisen mit dem Klon
+# (die CI konsultiert sie, Festlegung 2). Die übrigen state-Klassen bleiben lokal:
+# die zwei Gesamt-Dateien gates-passed.diffsha/.head (Festlegung 3) und die
+# Lauf-Ablagen bin/, spans/, bats-lint/.
 # .harness/skills/ ist versionierte Harness-Mechanik,
 # .harness/baseline/ ist die committet vendored Baseline (MR-007) —
-# beide gehören ins Repo, nicht hierher)
-.harness/state/
+# beide gehören ins Repo, nicht hierher.
+/.harness/state/*
+!.harness/state/gates-passed-*.key
+!.harness/state/full-smoke-passed.key
 
 # `make artifact DEST=./bin` (README, Benutzerhandbuch Weg B) legt das Verzeichnis
 # seit slice-051 selbst an — vorher brach der Aufruf ab und hinterliess nichts.

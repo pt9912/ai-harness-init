@@ -107,6 +107,36 @@ STUB
   grep -qF 'ausserhalb der deklarierten Hash-Ausnahmen' <<<"$out"
 }
 
+@test "stempel-ausnahme: ein committeter je-Check-Key und der E2E-Stempel unter .harness/state/ bewegen den Hash nicht (ADR-0111 Festlegung 1/4)" {
+  local root a b c
+  root="$(tmp_repo)"
+  printf 'basis\n' >"$root/docs.md"
+  a="$(cd "$root" && PATH="$root/.bin:$PATH" bash wth.sh)"
+  [ -n "$a" ]
+  mkdir -p "$root/.harness/state"
+  printf '9fe6c0c9d0fde3e6ea2c25f6dfa8fbd3a9ea1dcbdd8e5fa2c4b56fd0a9e0f1a2\n' >"$root/.harness/state/gates-passed-lint.key"
+  b="$(cd "$root" && PATH="$root/.bin:$PATH" bash wth.sh)"
+  [ "$a" = "$b" ]
+  printf '0a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9\n' >"$root/.harness/state/full-smoke-passed.key"
+  c="$(cd "$root" && PATH="$root/.bin:$PATH" bash wth.sh)"
+  rm -rf "$root"
+  [ "$b" = "$c" ]
+}
+
+@test "stempel-ausnahme: Inhalt unter .harness/state ausserhalb der deklarierten Klassen endet rot (fail-closed, MR-017-Form, ADR-0111 Festlegung 1)" {
+  local root out status
+  root="$(tmp_repo)"
+  printf 'basis\n' >"$root/docs.md"
+  mkdir -p "$root/.harness/state"
+  printf 'undeclared\n' >"$root/.harness/state/gates-passed.fremd"
+  status=0
+  out="$(cd "$root" && PATH="$root/.bin:$PATH" bash wth.sh 2>&1)" || status=$?
+  rm -rf "$root"
+  [ "$status" -ne 0 ]
+  grep -qF 'ausserhalb der deklarierten Hash-Ausnahmen' <<<"$out"
+  grep -qF '.harness/state/gates-passed.fremd' <<<"$out"
+}
+
 @test "enge: ausserhalb .harness/stamp bewegt sich der Hash weiter" {
   local root a b
   root="$(tmp_repo)"
