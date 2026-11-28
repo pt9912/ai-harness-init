@@ -190,6 +190,17 @@ Lerneintrag geschrieben.
   ([`ADR-0111`](../../adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
   Konsequenzen/Rest); greift der Fall real, Re-Evaluierung der ADR, nicht
   ein stiller Edit.
+- **Die `varianten`-Lesart des E2E-Stempels ist offen** — [`ADR-0111`](../../adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
+  Festlegung 4 nennt „die Anzahl der E2E-Varianten", keine Zählbasis;
+  implementiert zählt der Schreiber-Zug die top-level Zusagen-Zeilen
+  `^echo "full-smoke: OK —` des Abschnitts-Satzes am grünen Ende
+  (23 am Kopf), die runtime-Lesart („Anzahl der E2E-Abschnitte, Lauf
+  gemessen") träfe zusätzlich die OK-Zeile der Span-Zeugung unterhalb des
+  Abschnitts-Satzes und läge um 1 höher. Die implementierte Lesart steht am
+  Stempel-Schreiber-Kommentar ([`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh),
+  der `Der E2E-Stempel`-Kommentar vor dem Schreiber-Zug). — **Ausgang
+  (vorgesehen):** weiter offen —
+  die Lesart wäre ein Festlegung-Zug des Architect, kein stiller Edit.
 - **Die Deckung der Tafel-Mengen auf CI-Runner-Fassungen** — die Runner- und
   Netz-Varianten der Werkzeuge können von der Host-Fassung abweichen; der
   Transport-Key rechnet gegen denselben Satzerzeuger am Runner
